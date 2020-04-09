@@ -1,5 +1,6 @@
 module.exports = {
   showDateMethodUrl: (req, res, next) => {
+
     function formatConsoleDate(date) {
       var year = date.getFullYear()
       var month = date.getMonth() + 1
@@ -19,7 +20,18 @@ module.exports = {
         ((seconds < 10) ? '0' + seconds : seconds)
     }
 
-    console.log(`${formatConsoleDate(new Date())} | ${req.method} from ${req.url}`)
+    startTime = Date.now()
+    res.on("finish", () => {
+
+      finishTime = Date.now();
+      duration = finishTime - startTime;
+      req.request_Date = formatConsoleDate(new Date())
+      server_message = req.request_Date +
+        " | " + req.method + " from " +
+        req.url + " | total time: " + duration + "ms";
+      console.log(server_message);
+    });
+
     next()
   }
 }
